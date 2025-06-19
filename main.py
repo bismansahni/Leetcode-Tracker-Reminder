@@ -39,6 +39,10 @@ def connectDB():
 
 
 
+@app.route("/")
+def home():
+    return "<p>Service is running.</p>"
+
 @app.route("/CommitQuestion")
 def commit_question():
     connectDB()
