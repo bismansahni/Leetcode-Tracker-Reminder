@@ -8,6 +8,8 @@ from controllers.fetchQuestion import fetchQuestionfromDB
 from controllers.sendEmail import send_email
 from controllers.DailyDbupdate import DailyDBUpdate
 
+from controllers.questionCommit import questionCommit
+
 load_dotenv()
 
 app = Flask(__name__)
@@ -34,6 +36,15 @@ def connectDB():
     except Exception as e:
         print(f"❌ Database connection error: {e}", file=sys.stderr)
         raise
+
+
+
+@app.route("/CommitQuestion")
+def commit_question():
+    connectDB()
+    
+    return questionCommit(connection_pool) 
+
 
 @app.route("/HitMain")
 def hit_main():
