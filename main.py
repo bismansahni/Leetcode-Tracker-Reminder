@@ -1,43 +1,20 @@
 from flask import Flask, jsonify, request
 import os
-from psycopg2 import pool
+import psycopg2
 from dotenv import load_dotenv
 import sys
 
 from controllers.fetchQuestion import fetchQuestionfromDB
 from controllers.sendEmail import send_email
 from controllers.DailyDbupdate import DailyDBUpdate
-
 from controllers.questionCommit import questionCommit
 
 load_dotenv()
 
 app = Flask(__name__)
 
-connection_pool = None
-
 def connectDB():
-    global connection_pool
-    try:
-        if connection_pool is None:
-            connection_pool = pool.SimpleConnectionPool(
-                minconn=1,
-                maxconn=5,
-                dsn=os.getenv('DATABASE_URL')
-            )
-            print("✅ Connection pool created successfully")
-
-        conn = connection_pool.getconn()
-        if conn is None:
-            raise Exception("Failed to get connection from pool")
-        
-        connection_pool.putconn(conn)
-
-    except Exception as e:
-        print(f"❌ Database connection error: {e}", file=sys.stderr)
-        raise
-
-
+    return psycopg2.connect(os.getenv("DATABASE_URL"))
 
 @app.route("/")
 def home():
@@ -45,10 +22,18 @@ def home():
 
 @app.route("/CommitQuestion")
 def commit_question():
-    connectDB()
-    
-    return questionCommit(connection_pool) 
+    try:
+        token = request.args.get("token")
+        expected_token = os.getenv("SECRET_TOKEN")
 
+        if token != expected_token:
+            return jsonify({"status": "unauthorized", "message": "Invalid or missing token"}), 401
+
+        conn = connectDB()
+        return questionCommit(conn)
+
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
 
 @app.route("/HitMain")
 def hit_main():
@@ -59,16 +44,21 @@ def hit_main():
         if token != expected_token:
             return jsonify({"status": "unauthorized", "message": "Invalid or missing token"}), 401
 
-        connectDB()
-        results = fetchQuestionfromDB(connection_pool)
+        conn = connectDB()
+        results = fetchQuestionfromDB(conn)
+        conn.close()  
+
         send_email(results)
-        DailyDBUpdate(connection_pool)
+
+        db_conn = connectDB()  
+        DailyDBUpdate(db_conn)
+        db_conn.close()
 
         return jsonify({
             "status": "success",
             "questions": [{"id": row[0], "url": row[1]} for row in results]
         })
-        
+
     except Exception as e:
         return jsonify({
             "status": "error",
