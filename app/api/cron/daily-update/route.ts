@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { headers } from 'next/headers';
 
 export async function GET(request: NextRequest) {
-  const authHeader = headers().get('authorization');
+  const headersList = await headers();
+  const authHeader = headersList.get('authorization');
   
   if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
     return NextResponse.json(
