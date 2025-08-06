@@ -3,6 +3,7 @@ export const metadata = {
   description: 'Track your LeetCode practice progress',
 }
 
+
 export default function RootLayout({
   children,
 }: {
