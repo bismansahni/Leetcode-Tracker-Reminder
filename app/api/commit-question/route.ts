@@ -16,29 +16,27 @@ export async function GET(request: NextRequest) {
     const id1 = request.nextUrl.searchParams.get('id1');
     const id2 = request.nextUrl.searchParams.get('id2');
 
-    if (!id1 || !id2) {
+    if (!id1 && !id2) {
       return NextResponse.json(
-        { status: "error", message: "Missing question IDs" },
+        { status: "error", message: "At least one question ID (id1 or id2) is required" },
         { status: 400 }
       );
     }
 
-    await sql`
-      UPDATE questions
-      SET numberofrevision = numberofrevision + 1
-      WHERE id = ${id1}
-    `;
+    const updatedIds = [];
+    if (id1) updatedIds.push(id1);
+    if (id2) updatedIds.push(id2);
 
     await sql`
       UPDATE questions
       SET numberofrevision = numberofrevision + 1
-      WHERE id = ${id2}
+      WHERE id IN (${sql.join(updatedIds, sql`, `)})
     `;
 
     return NextResponse.json({
       status: "success",
-      message: `Revisions updated successfully for IDs ${id1} and ${id2}`,
-      updated_ids: [id1, id2]
+      message: `Revisions updated successfully for ID(s): ${updatedIds.join(', ')}`,
+      updated_ids: updatedIds
     });
 
   } catch (error) {
