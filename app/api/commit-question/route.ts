@@ -24,14 +24,22 @@ export async function GET(request: NextRequest) {
     }
 
     const updatedIds = [];
-    if (id1) updatedIds.push(id1);
-    if (id2) updatedIds.push(id2);
+    if (id1) updatedIds.push(parseInt(id1));
+    if (id2) updatedIds.push(parseInt(id2));
 
-    await sql`
-      UPDATE questions
-      SET numberofrevision = numberofrevision + 1
-      WHERE id IN (${sql.join(updatedIds, sql`, `)})
-    `;
+    if (updatedIds.length === 1) {
+      await sql`
+        UPDATE questions
+        SET numberofrevision = numberofrevision + 1
+        WHERE id = ${updatedIds[0]}
+      `;
+    } else {
+      await sql`
+        UPDATE questions
+        SET numberofrevision = numberofrevision + 1
+        WHERE id = ${updatedIds[0]} OR id = ${updatedIds[1]}
+      `;
+    }
 
     return NextResponse.json({
       status: "success",
