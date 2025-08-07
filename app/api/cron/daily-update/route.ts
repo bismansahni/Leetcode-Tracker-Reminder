@@ -14,8 +14,6 @@ export async function GET(request: NextRequest) {
 
   try {
     const baseUrl = process.env.VERCEL_URL 
-      ? `https://${process.env.VERCEL_URL}` 
-      : 'http://localhost:3000';
 
     const response = await fetch(`${baseUrl}/api/hit-main?token=${process.env.SECRET_TOKEN}`, {
       method: 'GET',
