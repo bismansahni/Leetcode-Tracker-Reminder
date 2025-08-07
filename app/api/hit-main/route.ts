@@ -22,7 +22,6 @@ async function sendEmail(results: any[]) {
   const privateKey = process.env.EMAILJS_PRIVATE_KEY;
 
   if (results.length < 2) {
-    console.log("Not enough questions to send.");
     return;
   }
 

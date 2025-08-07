@@ -65,7 +65,7 @@ export async function GET(request: NextRequest) {
     });
 
     const rawText = await response.text();
-    console.log('🔥 Raw response from /api/hit-main:', rawText);
+
 
     try {
       const data = JSON.parse(rawText);
