@@ -57,8 +57,8 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const host = request.headers.get('host');
-    const baseUrl = `https://${host}`;
+    // 💡 Hardcode production domain to avoid SSO issues on preview deploys
+    const baseUrl = 'https://leetcode-tracker-reminder.vercel.app';
 
     const response = await fetch(`${baseUrl}/api/hit-main?token=${process.env.SECRET_TOKEN}`, {
       method: 'GET',
@@ -75,11 +75,7 @@ export async function GET(request: NextRequest) {
         message: 'Daily update completed',
       });
     } catch (err) {
-      if (err instanceof Error) {
-        console.error('❌ JSON parse error:', err.message);
-      } else {
-        console.error('❌ JSON parse error (non-Error):', err);
-      }
+      console.error('❌ JSON parse error:', err instanceof Error ? err.message : err);
       return NextResponse.json(
           {
             success: false,
