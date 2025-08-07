@@ -15,7 +15,10 @@ export async function GET(request: NextRequest) {
   try {
     // const baseUrl = process.env.VERCEL_URL
 
-    const baseUrl = request.nextUrl.origin;
+    const host = request.headers.get('host');
+    const baseUrl = `https://${host}`;
+
+
 
 
     const response = await fetch(`${baseUrl}/api/hit-main?token=${process.env.SECRET_TOKEN}`, {
