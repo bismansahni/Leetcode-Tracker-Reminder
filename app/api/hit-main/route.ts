@@ -28,7 +28,7 @@ async function sendEmail(results: any[]) {
   const [firstQuestion, secondQuestion] = results;
 
   const templateParams = {
-    to_email: "manas.gowda04@gmail.com",
+    to_email: process.env.TO_EMAIL,
     subject: "Your Random Questions",
     first_question_id: firstQuestion.id,
     first_question_url: firstQuestion.url,
@@ -73,7 +73,7 @@ async function dailyDBUpdate() {
   const payload = {
     query,
     variables: {
-      username: "manas-1404",
+      username: process.env.LEETCODE_USERNAME,
       limit: 10
     }
   };
