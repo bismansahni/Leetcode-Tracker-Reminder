@@ -13,6 +13,7 @@ export async function GET(request: NextRequest) {
       );
     }
 
+
     const id1 = request.nextUrl.searchParams.get('id1');
     const id2 = request.nextUrl.searchParams.get('id2');
 
