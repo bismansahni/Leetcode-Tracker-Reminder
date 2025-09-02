@@ -32,6 +32,96 @@ A serverless LeetCode practice tracker built with Next.js and deployed on Vercel
      last_sent_date TIMESTAMP
    );
    ```
+   
+4. Deploy the project on Vercel. Once you receive the project URL from Vercel, update the baseurl in `api/cron/daily-update/route.ts` with the new URL, then redeploy the project on Vercel.
+
+## EmailJS Template
+Use the following variables in your EmailJS template:
+
+```html
+<div
+   style="
+      max-width: 600px;
+      margin: auto;
+      font-family: Arial, sans-serif;
+      color: #2d3748;
+      background: #ffffff;
+      border-radius: 8px;
+      padding: 24px;
+      border: 1px solid #e5e7eb;
+      line-height: 1.6;
+   "
+>
+   <!-- Header -->
+   <div
+      style="
+         text-align: center;
+         padding-bottom: 16px;
+         border-bottom: 1px solid #e5e7eb;
+      "
+   >
+      <h2 style="margin: 0; font-size: 22px; color: #1a202c">
+         Daily LeetCode Revision
+      </h2>
+   </div>
+
+   <!-- Body -->
+   <div style="padding: 20px 0">
+      <p style="margin: 0 0 12px">Hello Leetcoder,</p>
+      <p style="margin: 0 0 20px">
+         Here are your two questions to review today:
+      </p>
+
+      <ol style="padding-left: 20px; margin: 0 0 20px">
+         <li style="margin-bottom: 12px">
+            <strong>Question {{first_question_id}}</strong><br />
+            <a
+               href="{{first_question_url}}"
+               target="_blank"
+               style="color: #3182ce; text-decoration: none"
+               >{{first_question_url}}</a
+            >
+         </li>
+         <li>
+            <strong>Question {{second_question_id}}</strong><br />
+            <a
+               href="{{second_question_url}}"
+               target="_blank"
+               style="color: #3182ce; text-decoration: none"
+               >{{second_question_url}}</a
+            >
+         </li>
+      </ol>
+
+      <p style="margin: 20px 0">
+         Keep practicing daily — steady progress builds mastery.
+      </p>
+   </div>
+
+   <!-- Footer -->
+   <div
+      style="
+         font-size: 12px;
+         color: #718096;
+         text-align: center;
+         border-top: 1px solid #e5e7eb;
+         padding-top: 12px;
+      "
+   >
+      <p style="margin: 4px 0">Made with ❤️ by contributors</p>
+      <p style="margin: 4px 0">
+         <a
+            href="https://github.com/bismansahni/Leetcode-Tracker-Reminder"
+            target="_blank"
+            style="color: #3182ce; text-decoration: none"
+         >
+            View on GitHub
+         </a>
+      </p>
+   </div>
+</div>
+
+```
 
 ## Deploy to Vercel
 
