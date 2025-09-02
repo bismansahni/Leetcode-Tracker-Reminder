@@ -57,8 +57,8 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    // 💡 Hardcode production domain to avoid SSO issues on preview deploys
-    const baseUrl = 'https://leetcode-tracker-reminder-six.vercel.app';
+    // Hardcode production domain to avoid SSO issues on preview deploys
+    const baseUrl = 'https://leetcode-tracker-reminder.vercel.app';
 
     const response = await fetch(`${baseUrl}/api/hit-main?token=${process.env.SECRET_TOKEN}`, {
       method: 'GET',
