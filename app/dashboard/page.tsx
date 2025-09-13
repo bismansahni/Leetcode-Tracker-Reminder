@@ -14,8 +14,8 @@ import {
     Cell,
 } from 'recharts';
 import type { Question } from '@/app/dashboard/question';
+import { StatCard } from '@/app/dashboard/StatCardProps';
 
-// Icon components typed to accept className and SVG props
 const BookOpenIcon: React.FC<React.SVGProps<SVGSVGElement>> = ({ className, ...props }) => (
     <svg className={`w-8 h-8 ${className ?? ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24" {...props}>
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
@@ -45,40 +45,6 @@ const RotateCcwIcon: React.FC<React.SVGProps<SVGSVGElement>> = ({ className, ...
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
     </svg>
 );
-
-type ColorKey = 'blue' | 'green' | 'purple' | 'orange' | 'red' | 'yellow';
-
-type StatCardProps = {
-    icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
-    title: string;
-    value: number | string;
-    subtitle?: string;
-    color?: ColorKey;
-};
-
-const StatCard: React.FC<StatCardProps> = ({ icon: Icon, title, value, subtitle, color = 'blue' }) => {
-    const colorClasses: Record<ColorKey, string> = {
-        blue: 'border-blue-500 text-blue-500',
-        green: 'border-green-500 text-green-500',
-        purple: 'border-purple-500 text-purple-500',
-        orange: 'border-orange-500 text-orange-500',
-        red: 'border-red-500 text-red-500',
-        yellow: 'border-yellow-500 text-yellow-500',
-    };
-
-    return (
-        <div className={`bg-white rounded-lg shadow-md p-6 border-l-4 ${colorClasses[color]}`}>
-            <div className="flex items-center justify-between">
-                <div>
-                    <p className="text-sm font-medium text-gray-600">{title}</p>
-                    <p className="text-3xl font-bold text-gray-900">{value}</p>
-                    {subtitle && <p className="text-sm text-gray-500">{subtitle}</p>}
-                </div>
-                <Icon className="text-inherit" />
-            </div>
-        </div>
-    );
-};
 
 export default function LeetCodeDashboard() {
     const [questions, setQuestions] = useState<Question[]>([]);
