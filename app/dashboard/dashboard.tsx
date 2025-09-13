@@ -8,6 +8,7 @@ import {
 import type { Question, MasteryLevel } from '@/app/dashboard/question';
 import { StatCard } from '@/app/components/dashboard-components/StatCardProps';
 import {BookOpenIcon, AwardIcon, TargetIcon, TrendingUpIcon, RotateCcwIcon} from "@/app/components/dashboard-components/icons";
+import TodaysQuestions from "@/app/components/todayquestion-components/todayquestion";
 
 export default function LeetCodeDashboard() {
     const [questions, setQuestions] = useState<Question[]>([]);
@@ -122,6 +123,8 @@ export default function LeetCodeDashboard() {
                         {' '}<span className="opacity-75">As of: {new Date().toLocaleString()}</span>
                     </p>
                 </div>
+
+                <TodaysQuestions />
 
                 {/* Question Count Analytics */}
                 <div className="mb-8">
