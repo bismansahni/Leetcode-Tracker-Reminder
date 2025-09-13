@@ -122,11 +122,23 @@ export default function LeetCodeDashboard() {
     return (
         <div className="min-h-screen bg-gray-50 p-6">
             <div className="max-w-7xl mx-auto">
-                <h1 className="text-3xl font-bold text-gray-900 mb-8">LeetCode Analytics Dashboard</h1>
+                <h1 className="text-3xl font-bold text-gray-900 mb-4">LeetCode Analytics Dashboard</h1>
+
+                {/* Context / info banner */}
+                <div className="mb-8 p-4 rounded-lg border bg-blue-50 border-blue-100">
+                    <p className="text-sm text-blue-900">
+                        This dashboard summarizes your solved LeetCode problems and revision patterns. Data is loaded and cached for up to <strong>12 hours</strong> for faster loads.
+                        {' '}<span className="opacity-75">As of: {new Date().toLocaleString()}</span>
+                    </p>
+                </div>
 
                 {/* Question Count Analytics */}
                 <div className="mb-8">
-                    <h2 className="text-2xl font-semibold text-gray-800 mb-6">Question Count Analytics</h2>
+                    <h2 className="text-2xl font-semibold text-gray-800 mb-2">Question Count Analytics</h2>
+                    <p className="text-sm text-gray-500 mb-6">
+                        A quick snapshot of how many problems you’ve solved and how often you revisit them.
+                    </p>
+
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
                         <StatCard icon={BookOpenIcon} title="Total Questions Solved" value={totalQuestionsSolved} color="blue" />
                         <StatCard icon={TrendingUpIcon} title="Average Revisions" value={averageRevisions.toFixed(1)} subtitle="per question" color="green" />
@@ -136,7 +148,10 @@ export default function LeetCodeDashboard() {
 
                     {/* Revision Distribution Chart */}
                     <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-                        <h3 className="text-xl font-semibold text-gray-800 mb-4">Revision Distribution</h3>
+                        <h3 className="text-xl font-semibold text-gray-800 mb-2">Revision Distribution</h3>
+                        <p className="text-sm text-gray-500 mb-4">
+                            Each bar shows how many questions have a given number of total revisions. <span className="font-medium">6+</span> groups anything above 5.
+                        </p>
                         <div className="h-80">
                             <ResponsiveContainer width="100%" height="100%">
                                 <BarChart data={revisionDistributionData}>
@@ -153,7 +168,11 @@ export default function LeetCodeDashboard() {
 
                 {/* Revision-Based Analytics */}
                 <div className="mb-8">
-                    <h2 className="text-2xl font-semibold text-gray-800 mb-6">Revision-Based Analytics</h2>
+                    <h2 className="text-2xl font-semibold text-gray-800 mb-2">Revision-Based Analytics</h2>
+                    <p className="text-sm text-gray-500 mb-6">
+                        How your solved problems break down by revision habits—what’s untouched, what’s practiced, and what needs more reps.
+                    </p>
+
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
                         <StatCard
                             icon={BookOpenIcon}
@@ -168,7 +187,10 @@ export default function LeetCodeDashboard() {
 
                     {/* Most Revised Questions */}
                     <div className="bg-white rounded-lg shadow-md p-6">
-                        <h3 className="text-xl font-semibold text-gray-800 mb-4">Most Revised Questions</h3>
+                        <h3 className="text-xl font-semibold text-gray-800 mb-2">Most Revised Questions</h3>
+                        <p className="text-sm text-gray-500 mb-4">
+                            Top 5 problems by total revisions. Use these links to jump back in quickly.
+                        </p>
                         <div className="overflow-hidden">
                             <table className="min-w-full">
                                 <thead className="bg-gray-50">
@@ -183,9 +205,9 @@ export default function LeetCodeDashboard() {
                                     <tr key={question.id}>
                                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 capitalize">{question.title}</td>
                                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                          {question.numberofrevision}
-                        </span>
+                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                        {question.numberofrevision}
+                      </span>
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap text-sm text-blue-600 hover:text-blue-800">
                                             <a href={question.url} target="_blank" rel="noopener noreferrer" className="truncate max-w-xs block">
@@ -202,7 +224,13 @@ export default function LeetCodeDashboard() {
 
                 {/* Progress Analytics - Mastery Level Distribution */}
                 <div className="mb-8">
-                    <h2 className="text-2xl font-semibold text-gray-800 mb-6">Progress Analytics</h2>
+                    <h2 className="text-2xl font-semibold text-gray-800 mb-2">Progress Analytics</h2>
+                    <p className="text-sm text-gray-500 mb-6">
+                        Levels are based on total revisions: <span className="font-medium">Solved Once</span> (0),
+                        {' '}<span className="font-medium">Learning</span> (1–2),
+                        {' '}<span className="font-medium">Practiced</span> (3–4),
+                        {' '}<span className="font-medium">Mastered</span> (5+).
+                    </p>
 
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
                         {masteryData.map((level) => (
@@ -219,7 +247,10 @@ export default function LeetCodeDashboard() {
 
                     {/* Mastery Level Pie Chart */}
                     <div className="bg-white rounded-lg shadow-md p-6">
-                        <h3 className="text-xl font-semibold text-gray-800 mb-4">Mastery Level Distribution</h3>
+                        <h3 className="text-xl font-semibold text-gray-800 mb-2">Mastery Level Distribution</h3>
+                        <p className="text-sm text-gray-500 mb-4">
+                            Shows how your solved set spreads across mastery levels. Hover the chart for exact counts.
+                        </p>
                         <div className="flex flex-col lg:flex-row items-center">
                             <div className="h-80 w-full lg:w-1/2">
                                 <ResponsiveContainer width="100%" height="100%">
