@@ -133,16 +133,16 @@ export default function TodaysQuestions() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <QuestionCard
                     questionNumber="First"
-                    questionId={todayData?.first_question_id}
-                    questionUrl={todayData?.first_question_url}
-                    questionSolved={todayData?.first_question_solved}
+                    questionId={todayData?.first_question_id ?? null}
+                    questionUrl={todayData?.first_question_url ?? null}
+                    questionSolved={todayData?.first_question_solved ?? null}
                 />
 
                 <QuestionCard
                     questionNumber="Second"
-                    questionId={todayData?.second_question_id}
-                    questionUrl={todayData?.second_question_url}
-                    questionSolved={todayData?.second_question_solved}
+                    questionId={todayData?.second_question_id ?? null}
+                    questionUrl={todayData?.second_question_url ?? null}
+                    questionSolved={todayData?.second_question_solved ?? null}
                 />
             </div>
         </div>
