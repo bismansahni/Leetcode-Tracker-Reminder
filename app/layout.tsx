@@ -1,3 +1,6 @@
+import './globals.css'
+
+
 export const metadata = {
   title: 'LeetCode Tracker',
   description: 'Track your LeetCode practice progress',
