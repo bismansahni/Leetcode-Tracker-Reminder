@@ -2,16 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import {
-    BarChart,
-    Bar,
-    XAxis,
-    YAxis,
-    CartesianGrid,
-    Tooltip,
-    ResponsiveContainer,
-    PieChart,
-    Pie,
-    Cell,
+    BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
+    PieChart, Pie, Cell, LabelList,
 } from 'recharts';
 import type { Question, MasteryLevel } from '@/app/dashboard/question';
 import { StatCard } from '@/app/components/dashboard-components/StatCardProps';
@@ -260,10 +252,31 @@ export default function LeetCodeDashboard() {
                                             cy="50%"
                                             outerRadius={100}
                                             dataKey="count"
-                                            label={({ level, percentage }: { level: MasteryLevel; percentage: number }) => `${level}: ${percentage}%`}
                                         >
-                                            {masteryData.map((entry, index) => (
-                                                <Cell key={`cell-${index}`} fill={masteryColors[entry.level]} />
+                                            <LabelList
+                                                dataKey="percentage"
+                                                position="outside"
+                                                content={(props) => {
+                                                    const { x, y, value, index } = props as any;
+                                                    const item = masteryData[index as number];
+                                                    const label = item ? `${item.level}: ${value}%` : `${value ?? ''}%`;
+                                                    return (
+                                                        <text
+                                                            x={x}
+                                                            y={y}
+                                                            dy={0}
+                                                            textAnchor="middle"
+                                                            dominantBaseline="central"
+                                                            fontSize={12}
+                                                            fill="#374151"
+                                                        >
+                                                            {/*{label}*/}
+                                                        </text>
+                                                    );
+                                                }}
+                                            />
+                                            {masteryData.map((entry, i) => (
+                                                <Cell key={`cell-${i}`} fill={masteryColors[entry.level]} />
                                             ))}
                                         </Pie>
                                         <Tooltip formatter={(value: number) => [value, 'Questions'] as unknown as [string, string]} />
