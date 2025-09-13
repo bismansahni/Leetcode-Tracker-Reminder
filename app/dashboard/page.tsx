@@ -13,7 +13,7 @@ import {
     Pie,
     Cell,
 } from 'recharts';
-import type { Question } from '@/app/dashboard/question';
+import type { Question, MasteryLevel } from '@/app/dashboard/question';
 import { StatCard } from '@/app/components/dashboard-components/StatCardProps';
 import {BookOpenIcon, AwardIcon, TargetIcon, TrendingUpIcon, RotateCcwIcon} from "@/app/components/dashboard-components/icons";
 
@@ -24,7 +24,7 @@ export default function LeetCodeDashboard() {
     useEffect(() => {
         async function fetchQuestions() {
             try {
-                // ⬇️ the only important change: allow caching (12h TTL comes from API headers)
+                //caching (12h TTL comes from API headers) because the background worker updates the db every 24 hours
                 const res = await fetch('/api/get-dashboard', { cache: 'force-cache' });
 
                 if (!res.ok) {
@@ -33,7 +33,6 @@ export default function LeetCodeDashboard() {
 
                 const payload = await res.json();
 
-                // backend returns { status: 'success', questions: [...] }
                 const serverQuestions: Question[] = Array.isArray(payload)
                     ? payload
                     : Array.isArray(payload?.questions)
@@ -43,18 +42,9 @@ export default function LeetCodeDashboard() {
                 setQuestions(serverQuestions);
             } catch (err) {
                 console.error('Error fetching questions:', err);
-                // fallback data (unchanged)
+
                 setQuestions([
                     { id: 1, url: 'https://leetcode.com/problems/two-sum/', numberofrevision: 0 },
-                    { id: 2, url: 'https://leetcode.com/problems/add-two-numbers/', numberofrevision: 3 },
-                    { id: 3, url: 'https://leetcode.com/problems/longest-substring/', numberofrevision: 1 },
-                    { id: 4, url: 'https://leetcode.com/problems/median-two-arrays/', numberofrevision: 5 },
-                    { id: 5, url: 'https://leetcode.com/problems/palindrome-number/', numberofrevision: 2 },
-                    { id: 6, url: 'https://leetcode.com/problems/reverse-integer/', numberofrevision: 4 },
-                    { id: 7, url: 'https://leetcode.com/problems/string-to-integer/', numberofrevision: 1 },
-                    { id: 8, url: 'https://leetcode.com/problems/container-water/', numberofrevision: 0 },
-                    { id: 9, url: 'https://leetcode.com/problems/3sum/', numberofrevision: 2 },
-                    { id: 10, url: 'https://leetcode.com/problems/roman-to-integer/', numberofrevision: 6 },
                 ]);
             } finally {
                 setLoading(false);
@@ -105,8 +95,6 @@ export default function LeetCodeDashboard() {
         }));
 
     // Progress Analytics - Mastery Level Distribution
-    type MasteryLevel = 'Solved Once' | 'Learning' | 'Practiced' | 'Mastered';
-
     const masteryLevels: Record<MasteryLevel, number> = {
         'Solved Once': questions.filter((q) => q.numberofrevision === 0).length,
         Learning: questions.filter((q) => q.numberofrevision >= 1 && q.numberofrevision <= 2).length,

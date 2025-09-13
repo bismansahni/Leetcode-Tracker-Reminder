@@ -3,3 +3,5 @@ export type Question = {
     url: string;
     numberofrevision: number;
 };
+
+export type MasteryLevel = 'Solved Once' | 'Learning' | 'Practiced' | 'Mastered';
