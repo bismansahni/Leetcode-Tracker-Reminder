@@ -139,9 +139,9 @@ export const QuestionCard = ({ questionNumber, questionId, questionUrl, question
                     <div className="flex flex-col space-y-1">
                         <button
                             onClick={handleUpdateRevision}
-                            disabled={isUpdating}
+                            disabled={isUpdating || isSolved}
                             className={`inline-flex items-center justify-center px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 ${
-                                isUpdating
+                                isUpdating || isSolved
                                     ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
                                     : isSolved
                                         ? 'bg-blue-100 text-blue-800 hover:bg-blue-200 border border-blue-300'
