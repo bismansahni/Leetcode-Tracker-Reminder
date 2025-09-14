@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import { CheckCircleIcon, XCircleIcon, ExternalLinkIcon, CalendarIcon } from '@/app/components/todayquestion-components/icons';
-import {TodayQuestion, QuestionCardProps, ApiResponse} from "@/app/components/todayquestion-components/todayquestion-interface";
+import {TodayQuestion, ApiResponse} from "@/app/components/todayquestion-components/todayquuestion-interface";
 import { QuestionCard } from '@/app/components/todayquestion-components/questioncard';
 
 export default function TodaysQuestions() {

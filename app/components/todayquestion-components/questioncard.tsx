@@ -1,5 +1,8 @@
 import { useState } from 'react';
-import {QuestionCardProps} from "@/app/components/todayquestion-components/todayquuestion-interface";
+import {
+    QuestionCardProps,
+    UpdateRevisionResponse
+} from "@/app/components/todayquestion-components/todayquuestion-interface";
 import {
     CalendarIcon,
     CheckCircleIcon,
@@ -7,12 +10,6 @@ import {
     XCircleIcon,
     RefreshIcon
 } from "@/app/components/todayquestion-components/icons";
-
-interface UpdateRevisionResponse {
-    status: string;
-    message: string;
-    updated_ids?: number[];
-}
 
 export const QuestionCard = ({ questionNumber, questionId, questionUrl, questionSolved, onRevisionUpdate }: QuestionCardProps) => {
     const [isUpdating, setIsUpdating] = useState(false);

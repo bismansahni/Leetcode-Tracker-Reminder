@@ -25,3 +25,9 @@ export interface QuestionCardProps {
     questionSolved: string | null;
     onRevisionUpdate?: () => void;
 }
+
+export interface UpdateRevisionResponse {
+    status: string;
+    message: string;
+    updated_ids?: number[];
+}
