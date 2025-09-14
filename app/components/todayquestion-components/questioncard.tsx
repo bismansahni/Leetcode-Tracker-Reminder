@@ -16,7 +16,11 @@ export const QuestionCard = ({ questionNumber, questionId, questionUrl, question
     const [localSolved, setLocalSolved] = useState(questionSolved);
     const [updateStatus, setUpdateStatus] = useState<'success' | 'error' | null>(null);
 
-    const isSolved: boolean = localSolved === 'true' || localSolved === true;
+    const isSolved: boolean = typeof localSolved === 'boolean'
+        ? localSolved
+        : typeof localSolved === 'string'
+            ? localSolved.toLowerCase() === 'true'
+            : false;
     const hasData = questionId && questionUrl;
 
     const getTitle = (url: string | null) => {

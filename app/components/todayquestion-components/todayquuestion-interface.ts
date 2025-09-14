@@ -22,7 +22,7 @@ export interface QuestionCardProps {
     questionNumber: string;
     questionId: string | null;
     questionUrl: string | null;
-    questionSolved: string | null;
+    questionSolved: boolean | null;
     onRevisionUpdate?: () => void;
 }
 
