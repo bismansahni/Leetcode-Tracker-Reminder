@@ -10,6 +10,11 @@ export default function Home() {
             <li>/api/hit-main?token=YOUR_TOKEN - Fetch questions and send email</li>
             <li>/api/commit-question?token=YOUR_TOKEN&id1=X&id2=Y - Update revision count</li>
             <li>/api/cron/daily-update - Automated daily update (Vercel Cron)</li>
+            <li>
+              <a href="/dashboard" className="text-blue-600 underline">
+                Go to Dashboard Page
+              </a>
+            </li>
           </ul>
         </div>
       </div>
