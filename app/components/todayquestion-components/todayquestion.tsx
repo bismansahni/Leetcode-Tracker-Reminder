@@ -57,8 +57,8 @@ export default function TodaysQuestions() {
     }, [fetchTodaysQuestions]);
 
     // Callback to refresh data after revision update
-    const handleRevisionUpdate = useCallback(() => {
-        fetchTodaysQuestions();
+    const handleRevisionUpdate = useCallback(async () => {
+        await fetchTodaysQuestions();
     }, [fetchTodaysQuestions]);
 
     if (loading) {
@@ -94,8 +94,8 @@ export default function TodaysQuestions() {
     }
 
     const solvedCount = [
-        todayData?.first_question_solved === 'true',
-        todayData?.second_question_solved === 'true'
+        todayData?.first_question_solved === 'true' || todayData?.first_question_solved === true,
+        todayData?.second_question_solved === 'true' || todayData?.second_question_solved === true
     ].filter(Boolean).length;
 
     const totalQuestions = [
