@@ -176,3 +176,16 @@ The daily update runs automatically at 9:00 AM UTC. To change the schedule, edit
    - `/CommitQuestion` → `/api/commit-question`
 3. Cron job replaces manual scheduling
 4. Environment variables stay similar
+
+## Dashboard Visualizations
+
+Enable the optional analytics dashboard with `NEXT_PUBLIC_ANALYTICS_FLAG=1`.
+
+**Question Count Analytics**  
+![Question Count Analytics view](assets/QuestionAnalytics.png)
+
+**Revision-Based Analytics**  
+![Revision-Based Analytics view](assets/RevisionAnalytics.png)
+
+**Progress Analytics**  
+![Progress Analytics view](assets/ProgressAnalytics.png)
