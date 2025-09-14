@@ -34,10 +34,7 @@ export default function LeetCodeDashboard() {
                 setQuestions(serverQuestions);
             } catch (err) {
                 console.error('Error fetching questions:', err);
-
-                setQuestions([
-                    { id: 1, url: 'https://leetcode.com/problems/two-sum/', numberofrevision: 0 },
-                ]);
+                throw new Error('Questions could not be loaded');
             } finally {
                 setLoading(false);
             }
@@ -69,8 +66,7 @@ export default function LeetCodeDashboard() {
         percentage: totalQuestionsSolved > 0 ? Math.round((count / totalQuestionsSolved) * 100) : 0,
     }));
 
-    const averageRevisions =
-        totalQuestionsSolved > 0 ? questions.reduce((sum, q) => sum + q.numberofrevision, 0) / totalQuestionsSolved : 0;
+    const averageRevisions = totalQuestionsSolved > 0 ? questions.reduce((sum, q) => sum + q.numberofrevision, 0) / totalQuestionsSolved : 0;
 
     // Revision-Based Analytics
     const neverRevised = questions.filter((q) => q.numberofrevision === 0).length;

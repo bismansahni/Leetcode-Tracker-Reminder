@@ -24,8 +24,6 @@ export async function GET(request: NextRequest) {
             well_practiced: number;
             practiced: number;
             mastered: number;
-            learning: number;
-            solved_once: number;
         }>`
       SELECT
         COUNT(*)::int                                          AS total,
@@ -34,9 +32,7 @@ export async function GET(request: NextRequest) {
         SUM((numberofrevision BETWEEN 1 AND 2)::int)::int      AS needing_practice,
         SUM((numberofrevision >= 3)::int)::int                 AS well_practiced,
         SUM((numberofrevision BETWEEN 3 AND 4)::int)::int      AS practiced,
-        SUM((numberofrevision >= 5)::int)::int                 AS mastered,
-        SUM((numberofrevision BETWEEN 1 AND 2)::int)::int      AS learning,
-        SUM((numberofrevision = 0)::int)::int                  AS solved_once
+        SUM((numberofrevision >= 5)::int)::int                 AS mastered
       FROM questions
     `;
 
@@ -94,8 +90,6 @@ export async function GET(request: NextRequest) {
                     wellPracticed: metrics.well_practiced,
                     practiced: metrics.practiced,
                     mastered: metrics.mastered,
-                    learning: metrics.learning,
-                    solvedOnce: metrics.solved_once,
                 },
                 top5,
                 revisionDistribution,
