@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { sql } from '@/lib/db';
+import {getRedis} from "@/lib/redis";
 
 async function fetchQuestionFromDB() {
   const result = await sql`
@@ -54,6 +55,22 @@ async function sendEmail(results: any[]) {
 
   if (!response.ok) {
     throw new Error(`Failed to send email: ${response.statusText}`);
+  }
+
+  try {
+    const redis = getRedis();
+    const TTL = 36 * 60 * 60; // 36 hours in seconds
+
+    await Promise.all([
+      redis.set('first_question_id', String(firstQuestion.id), { ex: TTL }),
+      redis.set('first_question_url', firstQuestion.url, { ex: TTL }),
+      redis.set('first_question_solved', 'false', { ex: TTL }),
+      redis.set('second_question_id', String(secondQuestion.id), { ex: TTL }),
+      redis.set('second_question_url', secondQuestion.url, { ex: TTL }),
+      redis.set('second_question_solved', 'false', { ex: TTL })
+    ]);
+  } catch (e) {
+    console.error('[sendEmail] Failed to cache today questions in redis:', e);
   }
 }
 

@@ -33,7 +33,13 @@ A serverless LeetCode practice tracker built with Next.js and deployed on Vercel
    );
    ```
    
-4. Deploy the project on Vercel. Once you receive the project URL from Vercel, update the baseurl in `api/cron/daily-update/route.ts` with the new URL, then redeploy the project on Vercel.
+4. Create a Redis cache using Vercel. Vercel Marketplace provides easy integration with Upstash Redis for Nextjs. Store the Redis Secrets in your `.env` file.
+
+5. Add the update_token in the browser's local storage. The SECRET_TOKEN must match exactly with the one in your `.env` file. Open your browser console and run:
+     ```javascript
+     localStorage.setItem('update_token', SECRET_TOKEN)
+     ```
+6. Deploy the project on Vercel. Once you receive the project URL from Vercel, update the baseurl in `api/cron/daily-update/route.ts` with the new URL, then redeploy the project on Vercel.
 
 ## EmailJS Template
 Use the following variables in your EmailJS template:
