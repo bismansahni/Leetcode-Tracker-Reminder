@@ -42,10 +42,10 @@ export default function TodaysQuestions() {
             setTodayData({
                 first_question_id: '1',
                 first_question_url: 'https://leetcode.com/problems/two-sum/',
-                first_question_solved: 'true',
+                first_question_solved: true,
                 second_question_id: '2',
                 second_question_url: 'https://leetcode.com/problems/add-two-numbers/',
-                second_question_solved: 'false',
+                second_question_solved: false,
             });
         } finally {
             setLoading(false);
@@ -94,8 +94,8 @@ export default function TodaysQuestions() {
     }
 
     const solvedCount = [
-        todayData?.first_question_solved === 'true' || todayData?.first_question_solved === true,
-        todayData?.second_question_solved === 'true' || todayData?.second_question_solved === true
+        todayData?.first_question_solved === true,
+        todayData?.second_question_solved === true
     ].filter(Boolean).length;
 
     const totalQuestions = [

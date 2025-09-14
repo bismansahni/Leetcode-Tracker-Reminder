@@ -1,10 +1,10 @@
 export interface TodayQuestion {
     first_question_id: string | null;
     first_question_url: string | null;
-    first_question_solved: string | null;
+    first_question_solved: boolean | null;
     second_question_id: string | null;
     second_question_url: string | null;
-    second_question_solved: string | null;
+    second_question_solved: boolean | null;
 }
 
 export interface ApiResponse {
@@ -12,10 +12,10 @@ export interface ApiResponse {
     message?: string;
     first_question_id: string | null;
     first_question_url: string | null;
-    first_question_solved: string | null;
+    first_question_solved: boolean | null;
     second_question_id: string | null;
     second_question_url: string | null;
-    second_question_solved: string | null;
+    second_question_solved: boolean | null;
 }
 
 export interface QuestionCardProps {

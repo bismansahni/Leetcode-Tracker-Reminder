@@ -16,11 +16,7 @@ export const QuestionCard = ({ questionNumber, questionId, questionUrl, question
     const [localSolved, setLocalSolved] = useState(questionSolved);
     const [updateStatus, setUpdateStatus] = useState<'success' | 'error' | null>(null);
 
-    const isSolved: boolean = typeof localSolved === 'boolean'
-        ? localSolved
-        : typeof localSolved === 'string'
-            ? localSolved.toLowerCase() === 'true'
-            : false;
+    const isSolved: boolean = localSolved === true
     const hasData = questionId && questionUrl;
 
     const getTitle = (url: string | null) => {
@@ -46,7 +42,7 @@ export const QuestionCard = ({ questionNumber, questionId, questionUrl, question
 
             if (response.ok && data.status === 'success') {
                 // Update local state to show as solved
-                setLocalSolved('true');
+                setLocalSolved(true);
                 setUpdateStatus('success');
 
                 // Call parent callback to refresh data if provided
