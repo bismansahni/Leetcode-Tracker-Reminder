@@ -37,16 +37,7 @@ export default function TodaysQuestions() {
         } catch (err) {
             console.error('Error fetching today\'s questions:', err);
             setError(err instanceof Error ? err.message : 'Unknown error occurred');
-
-            // Fallback mock data for development
-            setTodayData({
-                first_question_id: '1',
-                first_question_url: 'https://leetcode.com/problems/two-sum/',
-                first_question_solved: true,
-                second_question_id: '2',
-                second_question_url: 'https://leetcode.com/problems/add-two-numbers/',
-                second_question_solved: false,
-            });
+            throw new Error('Questions could not be loaded');
         } finally {
             setLoading(false);
         }
