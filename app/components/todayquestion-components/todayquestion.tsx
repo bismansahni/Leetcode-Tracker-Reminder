@@ -1,8 +1,8 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { CheckCircleIcon, XCircleIcon, ExternalLinkIcon, CalendarIcon } from '@/app/components/todayquestion-components/icons';
-import {TodayQuestion, QuestionCardProps, ApiResponse} from "@/app/components/todayquestion-components/todayquuestion-interface";
+import {TodayQuestion, QuestionCardProps, ApiResponse} from "@/app/components/todayquestion-components/todayquestion-interface";
 import { QuestionCard } from '@/app/components/todayquestion-components/questioncard';
 
 export default function TodaysQuestions() {
@@ -10,50 +10,56 @@ export default function TodaysQuestions() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
-    useEffect(() => {
-        async function fetchTodaysQuestions() {
-            try {
-                const response = await fetch('/api/fetch-today-question', {
-                    cache: 'no-store'
-                });
+    const fetchTodaysQuestions = useCallback(async () => {
+        try {
+            const response = await fetch('/api/fetch-today-question', {
+                cache: 'no-store'
+            });
 
-                if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}`);
-                }
-
-                const data: ApiResponse = await response.json();
-
-                if (data.status === 'error') {
-                    throw new Error(data.message || 'Failed to fetch today\'s questions');
-                }
-
-                setTodayData({
-                    first_question_id: data.first_question_id,
-                    first_question_url: data.first_question_url,
-                    first_question_solved: data.first_question_solved,
-                    second_question_id: data.second_question_id,
-                    second_question_url: data.second_question_url,
-                    second_question_solved: data.second_question_solved,
-                });
-            } catch (err) {
-                console.error('Error fetching today\'s questions:', err);
-                setError(err instanceof Error ? err.message : 'Unknown error occurred');
-
-                setTodayData({
-                    first_question_id: '1',
-                    first_question_url: 'https://leetcode.com/problems/two-sum/',
-                    first_question_solved: 'true',
-                    second_question_id: '2',
-                    second_question_url: 'https://leetcode.com/problems/add-two-numbers/',
-                    second_question_solved: 'false',
-                });
-            } finally {
-                setLoading(false);
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}`);
             }
-        }
 
-        fetchTodaysQuestions();
+            const data: ApiResponse = await response.json();
+
+            if (data.status === 'error') {
+                throw new Error(data.message || 'Failed to fetch today\'s questions');
+            }
+
+            setTodayData({
+                first_question_id: data.first_question_id,
+                first_question_url: data.first_question_url,
+                first_question_solved: data.first_question_solved,
+                second_question_id: data.second_question_id,
+                second_question_url: data.second_question_url,
+                second_question_solved: data.second_question_solved,
+            });
+        } catch (err) {
+            console.error('Error fetching today\'s questions:', err);
+            setError(err instanceof Error ? err.message : 'Unknown error occurred');
+
+            // Fallback mock data for development
+            setTodayData({
+                first_question_id: '1',
+                first_question_url: 'https://leetcode.com/problems/two-sum/',
+                first_question_solved: 'true',
+                second_question_id: '2',
+                second_question_url: 'https://leetcode.com/problems/add-two-numbers/',
+                second_question_solved: 'false',
+            });
+        } finally {
+            setLoading(false);
+        }
     }, []);
+
+    useEffect(() => {
+        fetchTodaysQuestions();
+    }, [fetchTodaysQuestions]);
+
+    // Callback to refresh data after revision update
+    const handleRevisionUpdate = useCallback(() => {
+        fetchTodaysQuestions();
+    }, [fetchTodaysQuestions]);
 
     if (loading) {
         return (
@@ -113,8 +119,8 @@ export default function TodaysQuestions() {
                     <p className="text-sm text-blue-900">
                         Your daily LeetCode challenges. Complete both problems to maintain your streak!
                         <span className="ml-2 font-medium">
-              Progress: {solvedCount}/{totalQuestions} completed
-            </span>
+                            Progress: {solvedCount}/{totalQuestions} completed
+                        </span>
                     </p>
                 </div>
 
@@ -136,6 +142,7 @@ export default function TodaysQuestions() {
                     questionId={todayData?.first_question_id ?? null}
                     questionUrl={todayData?.first_question_url ?? null}
                     questionSolved={todayData?.first_question_solved ?? null}
+                    onRevisionUpdate={handleRevisionUpdate}
                 />
 
                 <QuestionCard
@@ -143,6 +150,7 @@ export default function TodaysQuestions() {
                     questionId={todayData?.second_question_id ?? null}
                     questionUrl={todayData?.second_question_url ?? null}
                     questionSolved={todayData?.second_question_solved ?? null}
+                    onRevisionUpdate={handleRevisionUpdate}
                 />
             </div>
         </div>

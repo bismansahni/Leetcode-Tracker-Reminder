@@ -23,4 +23,5 @@ export interface QuestionCardProps {
     questionId: string | null;
     questionUrl: string | null;
     questionSolved: string | null;
+    onRevisionUpdate?: () => void;
 }
