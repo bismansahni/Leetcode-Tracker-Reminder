@@ -5,13 +5,24 @@ import {
     BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
     PieChart, Pie, Cell, LabelList,
 } from 'recharts';
-import type { Question, MasteryLevel } from '@/app/dashboard/question';
+import type { Question, MasteryLevel, Metrics, Distribution, Top5 } from '@/app/dashboard/question';
 import { StatCard } from '@/app/components/dashboard-components/StatCardProps';
 import {BookOpenIcon, AwardIcon, TargetIcon, TrendingUpIcon, RotateCcwIcon} from "@/app/components/dashboard-components/icons";
 
 export default function LeetCodeDashboard() {
     const [questions, setQuestions] = useState<Question[]>([]);
     const [loading, setLoading] = useState(true);
+    const [serverMetrics, setServerMetrics] = useState<Metrics>({
+        averageRevisions: 0,
+        mastered: 0,
+        needingPractice: 0,
+        neverRevised: 0,
+        practiced: 0,
+        total: 0,
+        wellPracticed: 0
+    });
+    const [mostRevised, setMostRevised] = useState<Top5[]>([]);
+    const [revisionDistribution, setRevisionDistribution] = useState<Distribution[]>([]);
 
     useEffect(() => {
         async function fetchQuestions() {
@@ -25,13 +36,20 @@ export default function LeetCodeDashboard() {
 
                 const payload = await res.json();
 
+                console.log("response from api direct: ", payload);
+
                 const serverQuestions: Question[] = Array.isArray(payload)
                     ? payload
                     : Array.isArray(payload?.questions)
                         ? payload.questions
                         : [];
 
+                setServerMetrics(payload.metrics || {});
+                setRevisionDistribution(payload.revisionDistribution);
+                setMostRevised(payload.top5);
                 setQuestions(serverQuestions);
+
+                console.log("These are the questions from api: ", serverQuestions);
             } catch (err) {
                 console.error('Error fetching questions:', err);
                 throw new Error('Questions could not be loaded');
@@ -52,42 +70,32 @@ export default function LeetCodeDashboard() {
     }
 
     // Question Count Analytics
-    const totalQuestionsSolved = questions.length;
+    const totalQuestionsSolved: number = serverMetrics.total;
 
-    const revisionCounts = questions.reduce<Record<string, number>>((acc, q) => {
-        const key = q.numberofrevision >= 6 ? '6+' : q.numberofrevision.toString();
-        acc[key] = (acc[key] ?? 0) + 1;
-        return acc;
-    }, {});
-
-    const revisionDistributionData = Object.entries(revisionCounts).map(([revisions, count]) => ({
-        revisions: `${revisions} revision${revisions === '1' ? '' : 's'}`,
+    const revisionDistributionData = revisionDistribution.map(({ bucket, count }) => ({
+        revisions: `${bucket} revision${bucket === '1' ? '' : 's'}`,
         count,
-        percentage: totalQuestionsSolved > 0 ? Math.round((count / totalQuestionsSolved) * 100) : 0,
+        percentage: serverMetrics.total > 0
+            ? Math.round((count / serverMetrics.total) * 100)
+            : 0,
     }));
 
-    const averageRevisions = totalQuestionsSolved > 0 ? questions.reduce((sum, q) => sum + q.numberofrevision, 0) / totalQuestionsSolved : 0;
+    const averageRevisions: number = serverMetrics.averageRevisions;
 
     // Revision-Based Analytics
-    const neverRevised = questions.filter((q) => q.numberofrevision === 0).length;
-    const wellPracticed = questions.filter((q) => q.numberofrevision >= 3).length;
-    const needingPractice = questions.filter((q) => q.numberofrevision >= 1 && q.numberofrevision <= 2).length;
-    const revisionRate = totalQuestionsSolved > 0 ? Math.round(((totalQuestionsSolved - neverRevised) / totalQuestionsSolved) * 100) : 0;
+    const neverRevised: number = serverMetrics.neverRevised
+    const wellPracticed: number = serverMetrics.wellPracticed;
+    const needingPractice: number = serverMetrics.needingPractice;
+    const revisionRate: number = totalQuestionsSolved > 0 ? Math.round(((totalQuestionsSolved - neverRevised) / totalQuestionsSolved) * 100) : 0;
 
-    const mostRevisedQuestions = [...questions]
-        .sort((a, b) => b.numberofrevision - a.numberofrevision)
-        .slice(0, 5)
-        .map((q) => ({
-            ...q,
-            title: q.url.split('/problems/')[1]?.split('/')[0]?.replace(/-/g, ' ') || 'Problem',
-        }));
+    const mostRevisedQuestions: Top5[] = mostRevised;
 
     // Progress Analytics - Mastery Level Distribution
     const masteryLevels: Record<MasteryLevel, number> = {
-        'Solved Once': questions.filter((q) => q.numberofrevision === 0).length,
-        Learning: questions.filter((q) => q.numberofrevision >= 1 && q.numberofrevision <= 2).length,
-        Practiced: questions.filter((q) => q.numberofrevision >= 3 && q.numberofrevision <= 4).length,
-        Mastered: questions.filter((q) => q.numberofrevision >= 5).length,
+        'Solved Once': serverMetrics.neverRevised,
+        Learning: serverMetrics.needingPractice,
+        Practiced: serverMetrics.wellPracticed,
+        Mastered: serverMetrics.mastered,
     };
 
     const masteryData = (Object.entries(masteryLevels) as [MasteryLevel, number][])
@@ -105,7 +113,7 @@ export default function LeetCodeDashboard() {
         Mastered: '#8b5cf6',
     };
 
-    const maxRevisions = questions.length > 0 ? Math.max(...questions.map((q) => q.numberofrevision)) : 0;
+    const maxRevisions = mostRevised.length > 0 ? mostRevised[0].numberofrevision : 0;
 
     return (
         <div className="min-h-screen bg-gray-50 p-6">
