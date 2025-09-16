@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { sql } from '@/lib/db';
+import {getRedis} from "@/lib/redis";
 
 export async function GET(request: NextRequest) {
   try {
@@ -40,6 +41,40 @@ export async function GET(request: NextRequest) {
         SET numberofrevision = numberofrevision + 1
         WHERE id = ${updatedIds[0]} OR id = ${updatedIds[1]}
       `;
+    }
+
+    try {
+      const redis = getRedis();
+
+      // @ts-ignore
+      const [firstIdStr, secondIdStr] = await redis.mget<string>(
+          'first_question_id', 'second_question_id'
+      );
+
+      const firstId = firstIdStr ? Number(firstIdStr) : null;
+      const secondId = secondIdStr ? Number(secondIdStr) : null;
+
+      // Helper to set a solved flag while keeping the remaining TTL
+      const setSolvedKeepingTTL = async (solvedKey: 'first_question_solved' | 'second_question_solved') => {
+        const ttl = await redis.ttl(solvedKey);
+        if (ttl > 0) {
+          await redis.set(solvedKey, 'true', { ex: ttl });
+        } else {
+          // if no TTL on the key (or missing), just set true without TTL
+          await redis.set(solvedKey, 'true');
+        }
+      };
+
+      for (const id of updatedIds) {
+        if (firstId !== null && id === firstId) {
+          await setSolvedKeepingTTL('first_question_solved');
+        }
+        if (secondId !== null && id === secondId) {
+          await setSolvedKeepingTTL('second_question_solved');
+        }
+      }
+    } catch (e) {
+      console.error('[commit-question] redis update failed:', e);
     }
 
     return NextResponse.json({
