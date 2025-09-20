@@ -34,7 +34,7 @@ export const QuestionCard = ({ questionNumber, questionId, questionUrl, question
         try {
             let token = localStorage.getItem('update_token');
             if (!token) {
-                token = window.prompt('Please enter your update token:');
+                token = window.prompt('Please enter your secret token:');
                 if (token) {
                     localStorage.setItem('update_token', token);
                 } else {
