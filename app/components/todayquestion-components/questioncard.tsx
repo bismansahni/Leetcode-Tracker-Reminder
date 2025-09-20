@@ -32,7 +32,15 @@ export const QuestionCard = ({ questionNumber, questionId, questionUrl, question
         setUpdateStatus(null);
 
         try {
-            const token = localStorage.getItem('update_token');
+            let token = localStorage.getItem('update_token');
+            if (!token) {
+                token = window.prompt('Please enter your secret token:');
+                if (token) {
+                    localStorage.setItem('update_token', token);
+                } else {
+                    return;
+                }
+            }
 
             const response = await fetch(`/api/commit-question?token=${token}&id1=${questionId}`, {
                 method: 'GET',
