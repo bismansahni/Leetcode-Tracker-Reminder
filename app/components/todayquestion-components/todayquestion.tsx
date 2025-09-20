@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import { CheckCircleIcon, XCircleIcon, ExternalLinkIcon, CalendarIcon } from '@/app/components/todayquestion-components/icons';
-import {TodayQuestion, ApiResponse} from "@/app/components/todayquestion-components/todayquuestion-interface";
+import { TodayQuestion, ApiResponse } from "@/app/components/todayquestion-components/todayquuestion-interface";
 import { QuestionCard } from '@/app/components/todayquestion-components/questioncard';
 
 export default function TodaysQuestions() {
@@ -52,6 +52,15 @@ export default function TodaysQuestions() {
         await fetchTodaysQuestions();
     }, [fetchTodaysQuestions]);
 
+    // Handle update_token update
+    const handleUpdateToken = () => {
+        const newToken = prompt("Enter the new secret_token (This will only update the token present in this browser) (Use this option only if you previously entered the wrong token) :");
+        if (newToken) {
+            localStorage.setItem("update_token", newToken);
+            alert("update_token updated successfully!");
+        }
+    };
+
     if (loading) {
         return (
             <div className="bg-white rounded-lg shadow-md p-6">
@@ -100,9 +109,18 @@ export default function TodaysQuestions() {
             <div className="bg-white rounded-lg shadow-md p-6">
                 <div className="flex items-center justify-between mb-4">
                     <h2 className="text-2xl font-semibold text-gray-800">Today's Questions</h2>
-                    <div className="flex items-center text-gray-600">
-                        <CalendarIcon className="w-5 h-5 mr-2" />
-                        <span className="text-sm">{new Date().toLocaleDateString()}</span>
+                    <div className="flex items-center space-x-3">
+                        <div className="flex items-center text-gray-600">
+                            <CalendarIcon className="w-5 h-5 mr-2" />
+                            <span className="text-sm">{new Date().toLocaleDateString()}</span>
+                        </div>
+                        {/* Update Token Button */}
+                        <button
+                            onClick={handleUpdateToken}
+                            className="px-3 py-1 text-sm bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition"
+                        >
+                            Update Token
+                        </button>
                     </div>
                 </div>
 
