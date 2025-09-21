@@ -4,9 +4,9 @@ let redis: Redis | undefined;
 
 export function getRedis() {
     if (!redis) {
-        const url = process.env.KV_REST_API_URL;
+        const url = process.env.SHIT_KV_REST_API_URL;
 
-        const token = process.env.KV_REST_API_TOKEN;
+        const token = process.env.SHIT_KV_REST_API_TOKEN;
 
         if (!url || !token) {
             throw new Error(

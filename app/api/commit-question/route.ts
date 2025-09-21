@@ -73,6 +73,44 @@ export async function GET(request: NextRequest) {
           await setSolvedKeepingTTL('second_question_solved');
         }
       }
+
+      // Track recently solved problems
+      for (const id of updatedIds) {
+        const timestamp = Date.now();
+
+        // Get question details from database
+        const { rows } = await sql`
+          SELECT id, url, numberofrevision
+          FROM questions
+          WHERE id = ${id}
+        `;
+
+        if (rows.length > 0) {
+          const question = rows[0];
+          const title = question.url
+            .split('/problems/')[1]
+            ?.split('/')[0]
+            ?.replace(/-/g, ' ') || `Problem ${id}`;
+
+          // Store in a sorted set with timestamp as score for ordering
+          await redis.zadd('recent_solved', {
+            score: timestamp,
+            member: JSON.stringify({
+              id: question.id,
+              url: question.url,
+              title: title,
+              solvedAt: new Date(timestamp).toISOString(),
+              revisions: question.numberofrevision
+            })
+          });
+
+          // Keep only the 10 most recent entries
+          const count = await redis.zcard('recent_solved');
+          if (count > 10) {
+            await redis.zremrangebyrank('recent_solved', 0, -11);
+          }
+        }
+      }
     } catch (e) {
       console.error('[commit-question] redis update failed:', e);
     }
