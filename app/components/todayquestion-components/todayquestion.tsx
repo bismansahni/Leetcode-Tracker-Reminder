@@ -37,7 +37,6 @@ export default function TodaysQuestions() {
         } catch (err) {
             console.error('Error fetching today\'s questions:', err);
             setError(err instanceof Error ? err.message : 'Unknown error occurred');
-            throw new Error('Questions could not be loaded');
         } finally {
             setLoading(false);
         }
@@ -54,24 +53,21 @@ export default function TodaysQuestions() {
 
     // Handle update_token update
     const handleUpdateToken = () => {
-        const newToken = prompt("Enter the new secret_token (This will only update the token present in this browser) (Use this option only if you previously entered the wrong token) :");
+        const newToken = prompt("Enter the new secret_token:");
         if (newToken) {
             localStorage.setItem("update_token", newToken);
-            alert("update_token updated successfully!");
+            alert("Token updated successfully!");
         }
     };
 
     if (loading) {
         return (
-            <div className="bg-white rounded-lg shadow-md p-6">
+            <div className="glass-card rounded-2xl p-6">
                 <div className="animate-pulse">
-                    <div className="flex items-center justify-between mb-4">
-                        <div className="h-6 bg-gray-300 rounded w-48"></div>
-                        <div className="h-4 bg-gray-300 rounded w-24"></div>
-                    </div>
-                    <div className="space-y-4">
-                        <div className="h-4 bg-gray-300 rounded w-full"></div>
-                        <div className="h-4 bg-gray-300 rounded w-3/4"></div>
+                    <div className="h-6 bg-gray-200/50 rounded-lg w-48 mb-4"></div>
+                    <div className="space-y-3">
+                        <div className="h-4 bg-gray-200/50 rounded-lg w-full"></div>
+                        <div className="h-4 bg-gray-200/50 rounded-lg w-3/4"></div>
                     </div>
                 </div>
             </div>
@@ -80,14 +76,13 @@ export default function TodaysQuestions() {
 
     if (error && !todayData) {
         return (
-            <div className="bg-white rounded-lg shadow-md p-6 border-l-4 border-red-500">
-                <div className="flex items-center justify-between mb-4">
-                    <h2 className="text-xl font-semibold text-gray-800">Today's Questions</h2>
-                    <XCircleIcon className="w-6 h-6 text-red-500" />
-                </div>
-                <div className="text-center py-8">
-                    <p className="text-red-600 mb-2">Failed to load today's questions</p>
-                    <p className="text-sm text-gray-500">{error}</p>
+            <div className="glass-card rounded-2xl p-6 border-l-4 border-red-300">
+                <div className="flex items-center gap-3">
+                    <span className="text-2xl">⚠️</span>
+                    <div>
+                        <p className="text-sm font-medium text-gray-900">Failed to load today's questions</p>
+                        <p className="text-xs text-gray-500 mt-1">{error}</p>
+                    </div>
                 </div>
             </div>
         );
@@ -104,43 +99,51 @@ export default function TodaysQuestions() {
     ].filter(Boolean).length;
 
     return (
-        <div className="space-y-6 mb-7">
+        <div className="space-y-6">
             {/* Header Section */}
-            <div className="bg-white rounded-lg shadow-md p-6">
+            <div className="glass-card rounded-2xl p-6 bg-gradient-to-r from-teal-50/50 to-cyan-50/50">
                 <div className="flex items-center justify-between mb-4">
-                    <h2 className="text-2xl font-semibold text-gray-800">Today's Questions</h2>
-                    <div className="flex items-center space-x-3">
-                        <div className="flex items-center text-gray-600">
-                            <CalendarIcon className="w-5 h-5 mr-2" />
-                            <span className="text-sm">{new Date().toLocaleDateString()}</span>
-                        </div>
-                        {/* Update Token Button */}
-                        <button
-                            onClick={handleUpdateToken}
-                            className="px-3 py-1 text-sm bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition"
-                        >
-                            Update Token
-                        </button>
+                    <div>
+                        <h2 className="heading-section text-gray-800 flex items-center gap-3">
+                            Today's Challenges
+                            <span className="text-xs bg-white/80 backdrop-blur px-3 py-1 rounded-full font-medium text-gray-600">
+                                {new Date().toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}
+                            </span>
+                        </h2>
+                        <p className="text-sm text-gray-600 mt-2">Complete both problems to maintain your streak</p>
                     </div>
-                </div>
-
-                <div className="mb-4 p-4 rounded-lg border bg-blue-50 border-blue-100">
-                    <p className="text-sm text-blue-900">
-                        Your daily LeetCode challenges. Complete both problems to maintain your streak!
-                        <span className="ml-2 font-medium">
-                            Progress: {solvedCount}/{totalQuestions} completed
-                        </span>
-                    </p>
+                    <button
+                        onClick={handleUpdateToken}
+                        className="glass-card px-4 py-2 rounded-xl text-sm font-medium text-gray-700 hover:bg-white/80 transition-all"
+                    >
+                        Update Token
+                    </button>
                 </div>
 
                 {/* Progress Bar */}
-                <div className="w-full bg-gray-200 rounded-full h-2 mb-4">
-                    <div
-                        className={`h-2 rounded-full transition-all duration-300 ${
-                            solvedCount === totalQuestions ? 'bg-green-500' : 'bg-orange-500'
-                        }`}
-                        style={{ width: totalQuestions > 0 ? `${(solvedCount / totalQuestions) * 100}%` : '0%' }}
-                    ></div>
+                <div>
+                    <div className="flex justify-between text-sm mb-2">
+                        <span className="text-gray-600 font-medium">Daily Progress</span>
+                        <span className="font-bold text-gray-800">{solvedCount}/{totalQuestions} Completed</span>
+                    </div>
+                    <div className="w-full bg-gray-200/50 rounded-full h-3 overflow-hidden backdrop-blur">
+                        <div
+                            className={`h-3 rounded-full transition-all duration-500 ${
+                                solvedCount === 0
+                                    ? 'bg-gradient-to-r from-gray-300 to-gray-400'
+                                    : solvedCount === totalQuestions
+                                        ? 'bg-gradient-to-r from-teal-400 to-cyan-400'
+                                        : 'bg-gradient-to-r from-yellow-400 to-orange-400'
+                            }`}
+                            style={{ width: totalQuestions > 0 ? `${(solvedCount / totalQuestions) * 100}%` : '0%' }}
+                        />
+                    </div>
+                    {solvedCount === totalQuestions && totalQuestions > 0 && (
+                        <div className="flex items-center mt-3 text-teal-700">
+                            <span className="text-xl mr-2">🎉</span>
+                            <span className="text-sm font-medium">Great job! Daily goal achieved!</span>
+                        </div>
+                    )}
                 </div>
             </div>
 

@@ -49,29 +49,22 @@ export const QuestionCard = ({ questionNumber, questionId, questionUrl, question
             const data: UpdateRevisionResponse = await response.json();
 
             if (response.ok && data.status === 'success') {
-                // Update local state to show as solved
                 setLocalSolved(true);
                 setUpdateStatus('success');
 
-                // Call parent callback to refresh data if provided
                 if (onRevisionUpdate) {
                     onRevisionUpdate();
                 }
 
-                // Reset status after 3 seconds
                 setTimeout(() => setUpdateStatus(null), 3000);
             } else {
                 setUpdateStatus('error');
                 console.error('Failed to update revision:', data.message);
-
-                // Reset error status after 3 seconds
                 setTimeout(() => setUpdateStatus(null), 3000);
             }
         } catch (error) {
             console.error('Error updating revision:', error);
             setUpdateStatus('error');
-
-            // Reset error status after 3 seconds
             setTimeout(() => setUpdateStatus(null), 3000);
         } finally {
             setIsUpdating(false);
@@ -80,100 +73,99 @@ export const QuestionCard = ({ questionNumber, questionId, questionUrl, question
 
     if (!hasData) {
         return (
-            <div className="bg-white rounded-lg shadow-md p-6 border-l-4 border-gray-400">
+            <div className="glass-card rounded-2xl p-6">
                 <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-lg font-semibold text-gray-800">{questionNumber} Question</h3>
-                    <div className="flex items-center text-gray-400">
-                        <XCircleIcon className="w-5 h-5 mr-2" />
-                        <span className="text-sm">Not Available</span>
-                    </div>
+                    <h3 className="text-lg font-semibold text-gray-700">{questionNumber} Problem</h3>
+                    <span className="text-xs text-gray-400">Not Available</span>
                 </div>
-                <div className="text-center py-8 text-gray-500">
-                    <CalendarIcon className="w-8 h-8 mx-auto mb-2 opacity-50" />
-                    <p className="text-sm">No question data available for today</p>
+                <div className="text-center py-8 text-gray-400">
+                    <span className="text-4xl mb-3 block opacity-50">📋</span>
+                    <p className="text-sm">No question data available</p>
                 </div>
             </div>
         );
     }
 
     return (
-        <div className={`bg-white rounded-lg shadow-md p-6 border-l-4 ${
-            isSolved ? 'border-green-500' : 'border-orange-500'
+        <div className={`glass-card rounded-2xl p-6 transition-all hover:scale-[1.02] ${
+            isSolved ? 'bg-gradient-to-br from-green-50/30 to-emerald-50/30' : ''
         }`}>
-            <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold text-gray-800">{questionNumber} Question</h3>
-                <div className={`flex items-center ${isSolved ? 'text-green-600' : 'text-orange-600'}`}>
-                    {isSolved ? (
-                        <>
-                            <CheckCircleIcon className="w-5 h-5 mr-2" />
-                            <span className="text-sm font-medium">Solved</span>
-                        </>
-                    ) : (
-                        <>
-                            <XCircleIcon className="w-5 h-5 mr-2" />
-                            <span className="text-sm font-medium">Not Solved</span>
-                        </>
-                    )}
-                </div>
-            </div>
-
-            <div className="space-y-3">
-                <div>
-                    <p className="text-sm text-gray-600 mb-1">Problem Title:</p>
-                    <p className="font-medium text-gray-900 capitalize">{getTitle(questionUrl)}</p>
-                </div>
-
-                <div>
-                    <p className="text-sm text-gray-600 mb-1">Question ID:</p>
-                    <p className="text-gray-700">#{questionId}</p>
+            <div>
+                <div className="flex items-start justify-between mb-4">
+                    <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-2">
+                            <span className="text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                {questionNumber} Problem
+                            </span>
+                            {isSolved ? (
+                                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100/80 text-green-700">
+                                    <CheckCircleIcon className="w-3 h-3 mr-1" />
+                                    Solved
+                                </span>
+                            ) : (
+                                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100/80 text-yellow-700">
+                                    <div className="w-2 h-2 bg-yellow-400 rounded-full mr-1 animate-pulse"></div>
+                                    Pending
+                                </span>
+                            )}
+                        </div>
+                        <h3 className="text-xl font-bold text-gray-900 capitalize mb-1">
+                            {getTitle(questionUrl)}
+                        </h3>
+                        <p className="text-sm text-gray-500">Problem #{questionId}</p>
+                    </div>
                 </div>
 
-                <div className="pt-2 space-y-2">
-                    <a
-                        href={questionUrl || '#'}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className={`inline-flex items-center px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-                            isSolved
-                                ? 'bg-green-100 text-green-800 hover:bg-green-200'
-                                : 'bg-orange-100 text-orange-800 hover:bg-orange-200'
-                        }`}
-                    >
-                        <ExternalLinkIcon className="w-4 h-4 mr-2" />
-                        {isSolved ? 'Review Problem' : 'Solve Problem'}
-                    </a>
+                <div className="space-y-3">
+                    <div className="flex gap-3">
+                        <a
+                            href={questionUrl || '#'}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={`flex-1 inline-flex items-center justify-center px-4 py-2.5 rounded-xl text-sm font-medium transition-all ${
+                                isSolved
+                                    ? 'bg-gradient-to-r from-teal-500 to-cyan-500 text-white hover:from-teal-600 hover:to-cyan-600'
+                                    : 'bg-gradient-to-r from-gray-600 to-gray-700 text-white hover:from-gray-700 hover:to-gray-800'
+                            }`}
+                        >
+                            <ExternalLinkIcon className="w-4 h-4 mr-2" />
+                            {isSolved ? 'Review' : 'Solve'}
+                        </a>
 
-                    {/* Update Revision Button */}
-                    <div className="flex flex-col space-y-1">
                         <button
                             onClick={handleUpdateRevision}
                             disabled={isUpdating || isSolved}
-                            className={`inline-flex items-center justify-center px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 ${
+                            className={`flex-1 inline-flex items-center justify-center px-4 py-2.5 rounded-xl text-sm font-medium transition-all ${
                                 isUpdating || isSolved
-                                    ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                                    : isSolved
-                                        ? 'bg-blue-100 text-blue-800 hover:bg-blue-200 border border-blue-300'
-                                        : 'bg-purple-100 text-purple-800 hover:bg-purple-200 border border-purple-300'
+                                    ? 'bg-gray-100/50 text-gray-400 cursor-not-allowed'
+                                    : 'glass-card text-gray-700 hover:bg-white/80'
                             }`}
                         >
                             <RefreshIcon className={`w-4 h-4 mr-2 ${isUpdating ? 'animate-spin' : ''}`} />
-                            {isUpdating ? 'Updating...' : 'Update Revision'}
+                            {isUpdating ? 'Updating...' : isSolved ? 'Completed' : 'Mark Complete'}
                         </button>
-
-                        {/* Status Messages */}
-                        {updateStatus === 'success' && (
-                            <div className="flex items-center text-green-600 text-xs">
-                                <CheckCircleIcon className="w-3 h-3 mr-1" />
-                                <span>Revision updated successfully!</span>
-                            </div>
-                        )}
-                        {updateStatus === 'error' && (
-                            <div className="flex items-center text-red-600 text-xs">
-                                <XCircleIcon className="w-3 h-3 mr-1" />
-                                <span>Failed to update revision</span>
-                            </div>
-                        )}
                     </div>
+
+                    {/* Status Messages */}
+                    {updateStatus && (
+                        <div className={`flex items-center justify-center py-2 px-3 rounded-xl text-sm animate-fadeIn glass-card ${
+                            updateStatus === 'success'
+                                ? 'text-green-700'
+                                : 'text-red-700'
+                        }`}>
+                            {updateStatus === 'success' ? (
+                                <>
+                                    <span className="mr-2">✅</span>
+                                    <span>Successfully updated!</span>
+                                </>
+                            ) : (
+                                <>
+                                    <span className="mr-2">❌</span>
+                                    <span>Update failed</span>
+                                </>
+                            )}
+                        </div>
+                    )}
                 </div>
             </div>
         </div>
